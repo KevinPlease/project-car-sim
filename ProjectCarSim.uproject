@@ -22,5 +22,9 @@
 			"Name": "HoudiniEngine",
 			"Enabled": false
 		}
+	],
+	"TargetPlatforms": [
+		"Android",
+		"IOS"
 	]
 }
