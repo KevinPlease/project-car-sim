@@ -56,6 +56,10 @@ Build/*
 !Build/*/
 Build/*/**
 !Build/*/PakBlacklist*.txt
+# Whitelist Android and iOS resources 
+!Build/Android/**
+!Build/IOS/**
+Build/*/FileOpenOrder
 
 # Don't ignore icon files in Build
 !Build/**/*.ico
