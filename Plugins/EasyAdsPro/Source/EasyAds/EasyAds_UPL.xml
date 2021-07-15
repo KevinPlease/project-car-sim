@@ -1,0 +1,970 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+EasyAds Pro - unreal engine 4 ads plugin
+ Copyright (C) 2019 feiwu <feixuwu@outlook.com> All Rights Reserved.
+-->
+<!--Admob plugin additions-->
+<root xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools">
+	<!-- init section is always evaluated once per architecture -->
+	<init>
+		<log text="Admob Android init"/>
+		
+		<!-- get packaging for Admob from ini and reset it if architecture not supported -->
+		
+		<setStringFromProperty result="AppId" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="AndroidAppId" default="0"/>
+    <setStringFromProperty result="BannerAdUnit" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="AndroidBannerUnit" default="0"/>
+    <setStringFromProperty result="InterstitialAdUnit" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="AndroidInterstitialUnit" default="0"/>
+    <setStringFromProperty result="RewardedVideoAdUnit" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="AndroidRewardedVideoAdUnit" default="0"/>
+    <setStringFromProperty result="TestDevice" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="AndroidResultTestDevice" default=""/>
+    <setBoolFromProperty result="EnableTestSuite" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="EnableAndroidTestSuite" default="false"/>
+
+    <setBoolFromProperty result="DisableUnity" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="DisableAndroidUnity" default="false"/>
+    <setBoolFromProperty result="DisableVungle" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="DisableAndroidVungle" default="false"/>
+    <setBoolFromProperty result="DisableChartboost" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="DisableAndroidChartboost" default="false"/>
+
+    <setBoolFromProperty result="DisableFacebook" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="DisableAndroidFacebook" default="false"/>
+    <setBoolFromProperty result="DisableApplovin" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="DisableAndroidApplovin" default="false"/>
+    
+    <dumpvars/>
+	</init>
+
+	
+	<!-- optional files or directories to copy to Intermediate/Android/APK -->
+	<gradleCopies>
+      
+      <log text="Copying easyads files to staging"/>
+    
+     
+      <copyDir src="$S(PluginDir)/../ThirdParty/Android/Java"
+					dst = "$S(BuildDir)/src" />
+    
+      <copyDir src="$S(PluginDir)/../ThirdParty/Android/Java"
+					dst = "$S(BuildDir)/gradle/app/src/main/java" />
+    
+      <copyDir src="$S(PluginDir)/../ThirdParty/Android/permission_library"
+					dst="$S(BuildDir)/JavaLibs/permission_library" />
+    
+      <copyDir src="$S(PluginDir)/../ThirdParty/Android/permission_library"
+					dst="$S(BuildDir)/gradle/permission_library" />
+
+      <if condition="DisableFacebook">
+        <false>
+          <copyDir src="$S(PluginDir)/../ThirdParty/Android/res/xml"
+						  dst = "$S(BuildDir)/gradle/app/src/main/res/xml" />
+        </false>
+      </if>
+      
+	</gradleCopies>
+
+  
+  
+	
+	<!-- Files to copy before the build so they can be used in the build -->
+	<prebuildCopies>
+	    
+	</prebuildCopies>
+  
+  <gradleProperties> 
+      <insert>
+        android.useAndroidX=true
+        android.enableJetifier=true
+      </insert>
+  </gradleProperties>
+
+  <!-- AAR dependencies -->
+  <AARImports>
+    <insertValue value="com.google.android.gms,play-services-auth,17.0.0"/>
+    <insertNewline/>
+    
+    <insertValue value="com.google.android.gms,play-services-games,17.0.0"/>
+    <insertNewline/>
+    
+    <insertValue value="com.google.android.gms,play-services-nearby,17.0.0"/>
+    <insertNewline/>
+    
+    <insertValue value="com.google.android.gms,play-services-plus,17.0.0"/>
+    <insertNewline/>
+    
+    
+    <insertValue value="com.google.android.gms,play-services-ads,19.5.0"/>
+    <insertNewline/>
+
+    <insertValue value="com.google.android.ads.consent,consent-library,1.0.8"/>
+    <insertNewline/>
+
+    <insertValue value="com.android.billingclient,billing,2.1.0"/>
+    <insertNewline/>
+
+    <insertValue value="com.android.volley,volley,1.1.1"/>
+    <insertNewline/>
+
+    <if condition="DisableUnity">
+      <false>
+        <insertValue value="com.google.ads.mediation,unity,3.5.1.0"/>
+        <insertNewline/>
+   
+      </false>
+    </if>
+
+    <if condition="DisableChartboost">
+      <false>
+        <insertValue value="com.google.ads.mediation,chartboost,8.1.0.0"/>
+        <insertNewline/>
+
+      </false>
+    </if>
+
+    <if condition="DisableFacebook">
+      <false>
+        <insertValue value="com.google.ads.mediation,facebook,6.2.0.0"/>
+        <insertNewline/>
+
+        <insertValue value="com.facebook.android,facebook-android-sdk,6.2.0"/>
+        <insertNewline/>
+      </false>
+    </if>
+
+
+    <if condition="DisableVungle">
+      <false>
+ 
+        <insertValue value="com.google.ads.mediation,vungle,6.8.1.0"/>
+        <insertNewline/>
+      </false>
+    </if>
+
+    <if condition="DisableApplovin">
+      <false>
+        <insertValue value="com.google.ads.mediation,applovin,9.14.6.0"/>
+        <insertNewline/>
+      </false>
+    </if>
+    
+    
+    <if condition="EnableTestSuite">
+      <true>
+        <insertValue value="com.google.android.ads,mediation-test-suite,1.5.0"/>
+        <insertNewline/>
+      </true>
+    </if>
+  
+  </AARImports>
+
+  <gameActivityReplacement>
+    <setString result="Output" value="$S(PluginDir)/../ThirdParty/Android/GameActivity.java.template"/>
+  </gameActivityReplacement>
+
+  <buildGradleAdditions>
+    <insert>
+      ext{
+      android{
+        defaultConfig{
+          multiDexEnabled true
+        }
+        compileOptions {
+          sourceCompatibility JavaVersion.VERSION_1_8
+          targetCompatibility JavaVersion.VERSION_1_8
+        }
+        bundle {
+          density {
+            enableSplit true
+          }
+          abi {
+              enableSplit true
+          }
+          language {
+            enableSplit = false
+          }
+        }
+      }
+      allprojects {
+      repositories {
+      google()
+      jcenter()
+      maven {url "https://chartboostmobile.bintray.com/Chartboost"}
+      }
+      }
+      }
+    </insert>
+  </buildGradleAdditions>
+	
+
+	<!-- optional updates applied to AndroidManifest.xml -->
+	<androidManifestUpdates>
+		
+
+        <setElement result="AppIdMetadata" value="meta-data"/>
+        <addAttribute tag="$AppIdMetadata" name="android:name" value="com.epicgames.ue4.AdMob.AppId"/>
+        <addAttribute tag="$AppIdMetadata" name="android:value" value="$S(AppId)"/>
+        <addElement tag="application" name="AppIdMetadata"/>
+
+        <if condition="DisableFacebook">
+          <false>
+            <addAttribute tag="application" name="android:networkSecurityConfig" value="@xml/network_security_config"/>
+            
+          <setElement result="FBAutoEventSetting" value="meta-data"/>
+          <addAttribute tag="$FBAutoEventSetting" name="android:name" value="com.facebook.sdk.AutoLogAppEventsEnabled"/>
+          <addAttribute tag="$FBAutoEventSetting" name="android:value" value="false"/>
+          <addElement tag="application" name="FBAutoEventSetting"/>
+          </false>
+        </if>
+    
+        <setElement result="BannerUnitMetadata" value="meta-data"/>
+        <addAttribute tag="$BannerUnitMetadata" name="android:name" value="com.epicgames.ue4.AdMob.BannerAdUnit"/>
+        <addAttribute tag="$BannerUnitMetadata" name="android:value" value="$S(BannerAdUnit)"/>
+        <addElement tag="application" name="BannerUnitMetadata"/>
+        
+        
+        <setElement result="InterstitialUnitMetadata" value="meta-data"/>
+        <addAttribute tag="$InterstitialUnitMetadata" name="android:name" value="com.epicgames.ue4.AdMob.InterstitialAdUnit"/>
+        <addAttribute tag="$InterstitialUnitMetadata" name="android:value" value="$S(InterstitialAdUnit)"/>
+        <addElement tag="application" name="InterstitialUnitMetadata"/>
+
+
+        <setElement result="RewardedVideoMetadata" value="meta-data"/>
+        <addAttribute tag="$RewardedVideoMetadata" name="android:name" value="com.epicgames.ue4.AdMob.RewardedVideoAdUnit"/>
+        <addAttribute tag="$RewardedVideoMetadata" name="android:value" value="$S(RewardedVideoAdUnit)"/>
+        <addElement tag="application" name="RewardedVideoMetadata"/>
+
+        <setElement result="TestDeviceMetaData" value="meta-data"/>
+        <addAttribute tag="$TestDeviceMetaData" name="android:name" value="com.epicgames.ue4.AdMob.TestDevice"/>
+        <addAttribute tag="$TestDeviceMetaData" name="android:value" value="$S(TestDevice)"/>
+        <addElement tag="application" name="TestDeviceMetaData"/>
+    
+        <setElement result="AdmobAppId" value="meta-data"/>
+        <addAttribute tag="$AdmobAppId" name="android:name" value="com.google.android.gms.ads.APPLICATION_ID"/>
+        <addAttribute tag="$AdmobAppId" name="android:value" value="$S(AppId)"/>
+        <addElement tag="application" name="AdmobAppId"/>
+
+        <!-- Add permissions -->
+				<addPermission android:name="android.permission.INTERNET" />
+        <removePermission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+        <addPermission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:remove="android:maxSdkVersion"/>
+        <addPermission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        
+			
+	</androidManifestUpdates>
+
+	<!-- optional additions to proguard -->
+  <proguardAdditions>
+    <insert>
+      # Keep filenames and line numbers for stack traces
+      -keepattributes SourceFile,LineNumberTable
+
+      # Keep JavascriptInterface for WebView bridge
+      -keepattributes JavascriptInterface
+
+      # Sometimes keepattributes is not enough to keep annotations
+      -keep class android.webkit.JavascriptInterface {
+      *;
+      }
+
+      # Keep all classes in Unity Ads package
+      -keep class com.unity3d.ads.** {
+      *;
+      }
+      -dontwarn com.unity3d.ads.**
+      -dontwarn java.lang.invoke.**
+
+      #vungle
+      -keep class com.vungle.warren.** { *; }
+      -keep class com.vungle.warren.downloader.DownloadRequest
+      -dontwarn com.vungle.warren.error.VungleError$ErrorCode
+      -dontwarn com.vungle.warren.downloader.DownloadRequest$Status
+      -keepclassmembers enum com.vungle.warren.** { *; }
+
+      # Moat SDK
+      -keep class com.moat.** { *; }
+      -dontwarn com.moat.**
+      -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+      -keepattributes *Annotation*
+
+      # Retrofit
+      -keepattributes Signature, InnerClasses
+      -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+      -dontwarn javax.annotation.**
+      -dontwarn kotlin.Unit
+      -dontwarn retrofit2.-KotlinExtensions
+      -keepclassmembers,allowshrinking,allowobfuscation interface * {
+      @retrofit2.http.* &lt;methods&gt;
+        ;
+        }
+
+        # Okio+OkHttp
+        -dontwarn okhttp3.**
+        -dontwarn okio.**
+        -dontwarn javax.annotation.**
+        -dontwarn org.conscrypt.**
+        -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+        -keepclassmembers class * extends com.vungle.warren.persistence.Memorable {
+        public &lt;init&gt;(byte[]);
+      }
+
+
+      -keep class com.chartboost.** { *; }
+
+      -dontwarn org.apache.http.**
+      -dontwarn android.net.http.**
+      -dontwarn com.android.volley.**
+      -dontwarn android.app.Activity
+
+    </insert>
+  </proguardAdditions>
+
+
+	<!-- optional additions to the GameActivity imports in GameActivity.java -->
+	<gameActivityImportAdditions>
+		
+				<insert>
+          // AdMob imports
+          import com.ads.util.AdMob;
+          import com.google.ads.consent.*;
+
+        </insert>
+
+    <if condition="EnableTestSuite">
+      <true>
+        <insert>
+          import com.google.android.ads.mediationtestsuite.MediationTestSuite;
+        </insert>
+      </true>
+      
+    </if>
+
+
+    <if condition="DisableApplovin">
+      <false>
+        <insert>
+        import com.applovin.sdk.AppLovinPrivacySettings;
+        </insert>
+     </false>
+    </if>
+
+    <if condition="DisableUnity">
+      <false>
+        <insert>
+          import com.unity3d.ads.metadata.MetaData;
+          import com.unity3d.services.core.device.Storage;
+          import com.unity3d.services.core.device.StorageEvent;
+          import com.unity3d.services.core.device.StorageManager;
+        </insert>
+      </false>
+    </if>
+
+    <if condition="DisableVungle">
+      <false>
+        <insert>
+          import com.vungle.warren.Vungle;
+          import com.vungle.mediation.VungleConsent;
+        </insert>
+      </false>
+    </if>
+
+    <if condition="DisableChartboost">
+      <false>
+        <insert>
+          import com.chartboost.sdk.Chartboost;
+          import com.chartboost.sdk.Privacy.model.DataUseConsent;
+          import com.chartboost.sdk.Privacy.model.GDPR;
+        </insert>
+      </false>
+    </if>
+    
+    <if condition="DisableFacebook">
+      <false>
+        <insert>
+          import com.facebook.FacebookSdk;
+          import com.facebook.ads.*;
+        </insert>
+      </false>
+    </if>
+    
+  </gameActivityImportAdditions>
+
+	<!-- optional additions to the GameActivity class in GameActivity.java -->
+	<gameActivityClassAdditions>
+		
+				<insert>
+          // Begin AdMob gameActivityClassAdditions
+          private AdMob adMobInstance;
+
+          public void AndroidThunkJava_AdMob_ShowBanner(boolean bShowOnBottomOfScreen)
+          {
+          if (adMobInstance != null)
+          {
+          adMobInstance.ShowBanner(bShowOnBottomOfScreen );
+          }
+          }
+
+          public void AndroidThunkJava_AdMob_PlayRewardedVideo()
+          {
+          if (adMobInstance != null)
+          {
+          adMobInstance.playRewardAds();
+          }
+          }
+
+          public int AndroidThunkJava_AdMob_GetConsentStatus()
+          {
+          if (adMobInstance != null)
+          {
+          int status = adMobInstance.getConsentStatus();
+          return status;
+          }
+          return 0;
+          }
+
+          public boolean AndroidThunkJava_AdMob_SetConsentStatus(int status)
+          {
+          if (adMobInstance != null)
+          {
+          boolean ret = adMobInstance.setConsentStatus(status);
+          return ret;
+          }
+          return false;
+          }
+
+          public boolean AndroidThunkJava_AdMob_IsLocationInEEA()
+          {
+          if (adMobInstance != null)
+          {
+          boolean ret = adMobInstance.isLocationInEEA();
+          return ret;
+          }
+          return false;
+          }
+
+          public boolean AndroidThunkJava_AdMob_SetTagUnderAgeOfConsent(boolean isUnderAgeOfConsent)
+          {
+          if (adMobInstance != null)
+          {
+          boolean ret = adMobInstance.setTagForUnderAgeOfConsent(isUnderAgeOfConsent);
+          return ret;
+          }
+          return false;
+          }
+
+          public boolean AndroidThunkJava_AdMob_IsUseNonPersonalizedAds()
+          {
+          if (adMobInstance != null)
+          {
+          boolean ret = adMobInstance.useNonPersonalizedAds();
+          return ret;
+          }
+          return false;
+          }
+
+          public void AndroidThunkJava_AdMob_RequestConsentInfoUpdate(String publisherId)
+          {
+          if (adMobInstance != null)
+          {
+          adMobInstance.requestConsentInfoUpdate(publisherId);
+          }
+          }
+
+          public void AndroidThunkJava_Admob_RequestUserConfirmConsent(String privacyUrl, boolean withAdFreeOption)
+          {
+          if (adMobInstance != null)
+          {
+          adMobInstance.requestUserConfirmConsent(privacyUrl, withAdFreeOption);
+          }
+          }
+
+          public void AndroidThunkJava_AdMob_ShowInterstitialAd()
+          {
+          if (adMobInstance != null)
+          {
+          adMobInstance.ShowInterstitialAd();
+          }
+          }
+
+          public void AndroidThunkJava_AdMob_HideBanner()
+          {
+          if (adMobInstance != null)
+          {
+          adMobInstance.HideAdBanner();
+          }
+          }
+
+          public boolean AndroidThunkJava_AdMob_BannerReady()
+          {
+          if(adMobInstance != null)
+          {
+          return adMobInstance.IsBannerReady();
+          }
+          return false;
+          }
+
+          public boolean AndroidThunkJava_AdMob_InterstitialReady()
+          {
+          if(adMobInstance != null)
+          {
+          return adMobInstance.IsInterstitialReady();
+          }
+          return false;
+          }
+
+          public boolean AndroidThunkJava_AdMob_RewardedVideoReady()
+          {
+          if(adMobInstance != null)
+          {
+          return adMobInstance.IsRewardedVideoReady();
+          }
+          return false;
+          }
+
+          public void AndroidThunkJava_AdMob_LoadCustomInterstitial(String adUnit)
+          {
+          if(adMobInstance != null)
+          {
+          adMobInstance.LoadCustomInterstitial(adUnit);
+          }
+          }
+
+          public boolean AndroidThunkJava_AdMob_CustomInterstitialReady(String adUnit)
+          {
+          if(adMobInstance != null)
+          {
+          return adMobInstance.IsCustomInterstitialLoaded(adUnit);
+          }
+          return false;
+          }
+
+          public void AndroidThunkJava_AdMob_ShowCustomInterstitialAd(String adUnit)
+          {
+          if (adMobInstance != null)
+          {
+          adMobInstance.ShowCustomInterstitialAd(adUnit);
+          }
+          }
+
+          public void AndroidThunkJava_AdMob_LoadCustomRewardedVideo(String adUnit)
+          {
+          if(adMobInstance != null)
+          {
+          adMobInstance.LoadCustomRewardedVideo(adUnit);
+          }
+          }
+
+          public void AndroidThunkJava_AdMob_PlayCustomRewardedVideoAd(String adUnit)
+          {
+          if (adMobInstance != null)
+          {
+          adMobInstance.PlayCustomRewardedVideo(adUnit);
+          }
+          }
+
+          public boolean AndroidThunkJava_AdMob_CustomRewardedVideoReady(String adUnit)
+          {
+          if(adMobInstance != null)
+          {
+          return adMobInstance.IsCustomRewardedVideoLoaded(adUnit);
+          }
+          return false;
+          }
+
+          public boolean AndroidThunkJava_AdMob_InitlizeSdk()
+          {
+          try
+          {
+          final String app_id = _bundle.getString("com.epicgames.ue4.AdMob.AppId");
+          final String adBannerUnit = _bundle.getString("com.epicgames.ue4.AdMob.BannerAdUnit");
+          final String interstitialUnit = _bundle.getString("com.epicgames.ue4.AdMob.InterstitialAdUnit");
+          final String adRewardedUnit = _bundle.getString("com.epicgames.ue4.AdMob.RewardedVideoAdUnit");
+          final String testDevice = _bundle.getString("com.epicgames.ue4.AdMob.TestDevice");
+          String[] deveceList = new String[]{};
+          if(testDevice != null &amp;&amp; testDevice.length() > 0){
+          deveceList = testDevice.split(",");
+          }
+          adMobInstance.InitAdMob(app_id, adBannerUnit, interstitialUnit, adRewardedUnit, Arrays.asList(deveceList) );
+          Log.debug("AdMob:InitFinish:" + app_id + " " + adBannerUnit + " " + interstitialUnit + " " + adRewardedUnit + " " + Arrays.asList(testDevice) );
+          }
+          catch (Exception e) {
+          e.printStackTrace();
+
+          return false;
+          }
+
+          return true;
+          }
+
+
+
+          // End AdMob gameActivityClassAdditions
+        </insert>
+
+    <if condition="EnableTestSuite">
+      <true>
+          <insert>
+            public void AndroidThunkJava_AdMob_LaunchTestSuite()
+            {
+            final String app_id = _bundle.getString("com.epicgames.ue4.AdMob.AppId");
+            MediationTestSuite.launch(this, app_id);
+            }
+          </insert>
+      </true>
+
+    </if>
+
+    <if condition="EnableTestSuite">
+      <false>
+        <insert>
+          public void AndroidThunkJava_AdMob_LaunchTestSuite()
+          {
+            Log.debug("please enable testsuite in easyadss setting");
+          }
+        </insert>
+      </false>
+
+    </if>
+
+
+    <if condition="DisableApplovin">
+      <false>
+        <insert>
+          public int AndroidThunkJava_AdMob_GetApplovinConsentStatus(){
+          if(AppLovinPrivacySettings.hasUserConsent(this) ){
+          return AdMob.PERSONALIZED;
+          } else {
+          return AdMob.NON_PERSONALIZED;
+          }
+          }
+
+          public void AndroidThunkJava_AdMob_SetApplovinConsentStatus(int status){
+          if(status == AdMob.PERSONALIZED){
+          AppLovinPrivacySettings.setHasUserConsent(true, this);
+          } else {
+          AppLovinPrivacySettings.setHasUserConsent(false, this);
+          }
+          Log.debug("set applovin ads consent status:" + status);
+          }
+        </insert>
+      </false>
+    </if>
+
+    <if condition="DisableUnity">
+      <false>
+        <insert>
+          public int AndroidThunkJava_AdMob_GetUnityConsentStatus(){
+          try {
+          if (StorageManager.init(this)) {
+          Storage storage = StorageManager.getStorage(StorageManager.StorageType.PUBLIC);
+          if (storage.get("gdpr.consent") != null) {
+          Object vv = storage.get("gdpr.consent");
+          boolean haveConsent = (boolean) ((JSONObject)storage.get("gdpr.consent")).getBoolean("value");
+          if (haveConsent) {
+          return AdMob.PERSONALIZED;
+          } else {
+          return AdMob.NON_PERSONALIZED;
+          }
+          }
+          }
+          } catch (JSONException e){
+          Log.debug("get unity consent exception:" + e);
+          return AdMob.PERSONALIZED;
+          }
+
+          return AdMob.PERSONALIZED;
+          }
+
+          public void AndroidThunkJava_AdMob_SetUnityConsentStatus(int status){
+          MetaData gdprMetaData = new MetaData(this);
+          if(status == AdMob.PERSONALIZED){
+          gdprMetaData.set("gdpr.consent", true);
+          } else {
+          gdprMetaData.set("gdpr.consent", false);
+          }
+          gdprMetaData.commit();
+          Log.debug("set unity ads consent status:" + status);
+          }
+        </insert>
+      </false>
+    </if>
+
+    <if condition="DisableVungle">
+      <false>
+        <insert>
+          public int AndroidThunkJava_AdMob_GetVungleConsentStatus() {
+          Vungle.Consent currentGDPRStatus = Vungle.getConsentStatus();
+          if(currentGDPRStatus == null){
+          return AdMob.UNKNOWN;
+          }
+
+          if(currentGDPRStatus == Vungle.Consent.OPTED_IN){
+          return AdMob.PERSONALIZED;
+          }else {
+          return AdMob.NON_PERSONALIZED;
+          }
+          }
+
+          public void AndroidThunkJava_AdMob_SetVungleConsentStatus(int status){
+          if(status == AdMob.PERSONALIZED){
+          VungleConsent.updateConsentStatus(Vungle.Consent.OPTED_IN, "1.0.0");
+          } else {
+          VungleConsent.updateConsentStatus(Vungle.Consent.OPTED_OUT, "1.0.0");
+          }
+          Log.debug("set vungle ads consent status:" + status);
+          }
+        </insert>
+      </false>
+    </if>
+    
+    <if condition="DisableFacebook">
+      <false>
+        <insert>
+          public int AndroidThunkJava_Admob_GetFacebookConsentStatus(){
+          /*if(FacebookSdk.getAutoLogAppEventsEnabled() ){
+          return AdMob.PERSONALIZED;
+          } else {
+          return AdMob.NON_PERSONALIZED;
+          }*/
+          return AdMob.NON_PERSONALIZED;
+          }
+
+          public void AndroidThunkJava_Admob_SetFacebookConsentStatus(int status){
+          /*if(status == AdMob.PERSONALIZED) {
+          FacebookSdk.setAutoLogAppEventsEnabled(true);
+          } else {
+          FacebookSdk.setAutoLogAppEventsEnabled(false);
+          }
+          Log.debug("set facebook ads consent status:" + status);*/
+          }
+        </insert>
+      </false>
+    </if>
+
+    <if condition="DisableChartboost">
+      <false>
+        <insert>
+          public int AndroidThunkJava_AdMob_GetChartboostConsentStatus() {
+          GDPR gdpr = null;
+          try {
+          gdpr = (GDPR) Chartboost.getDataUseConsent(this, GDPR.GDPR_STANDARD);
+          } catch (Exception e) {
+          Log.debug("Chartboost Cannot parse consent to GDPR: "+e.toString());
+          return AdMob.UNKNOWN;
+          }
+          if(gdpr != null) {
+          String consentValue = gdpr.getConsent();
+          if(GDPR.GDPR_CONSENT.BEHAVIORAL.getValue().equals(consentValue)) {
+          Log.debug("Chartboost GDPR is BEHAVIORAL");
+          return AdMob.PERSONALIZED;
+          } else if(GDPR.GDPR_CONSENT.NON_BEHAVIORAL.getValue().equals(consentValue)){
+          Log.debug("Chartboost GDPR is NON_BEHAVIORAL");
+          return AdMob.NON_PERSONALIZED;
+          } else {
+          Log.debug("Chartboost GDPR is INVALID CONSENT");
+          return AdMob.UNKNOWN;
+          }
+          } else {
+          Log.debug("Chartboost GDPR is not set");
+          }
+          return AdMob.UNKNOWN;
+          }
+
+          public void AndroidThunkJava_AdMob_SetChartboostConsentStatus(int status) {
+          if(status == AdMob.PERSONALIZED){
+          Chartboost.addDataUseConsent(this, new GDPR(GDPR.GDPR_CONSENT.BEHAVIORAL));
+          } else {
+          Chartboost.addDataUseConsent(this, new GDPR(GDPR.GDPR_CONSENT.NON_BEHAVIORAL));
+          }
+          Log.debug("set chartboost ads consent status:" + status);
+          }
+        </insert>
+      </false>
+    </if>
+
+
+
+    <if condition="DisableApplovin">
+      <true>
+        <insert>
+          public int AndroidThunkJava_AdMob_GetApplovinConsentStatus(){
+          Log.debug("please enable applovin int easyadspro setting");
+          return AdMob.INVALID;
+          }
+
+          public void AndroidThunkJava_AdMob_SetApplovinConsentStatus(int status){
+          Log.debug("please enable applovin easyadspro setting");
+          }
+          </insert>
+      </true>
+    </if>
+
+    <if condition="DisableUnity">
+      <true>
+        <insert>
+          public int AndroidThunkJava_AdMob_GetUnityConsentStatus(){
+          Log.debug("please enable unity easyadspro setting");
+          return AdMob.INVALID;
+          }
+
+          public void AndroidThunkJava_AdMob_SetUnityConsentStatus(int status){
+          Log.debug("please enable unity easyadspro setting");
+          }
+          </insert>
+      </true>
+    </if>
+
+    <if condition="DisableVungle">
+      <true>
+        <insert>
+          public int AndroidThunkJava_AdMob_GetVungleConsentStatus(){
+          Log.debug("please enable vungle easyadspro setting");
+          return AdMob.INVALID;
+          }
+
+          public void AndroidThunkJava_AdMob_SetVungleConsentStatus(int status){
+          Log.debug("please enable vungle easyadspro setting");
+          }
+          </insert>
+      </true>
+    </if>
+
+    <if condition="DisableChartboost">
+      <true>
+        <insert>
+        public int AndroidThunkJava_AdMob_GetChartboostConsentStatus(){
+        Log.debug("please enable chartboost easyadspro setting");
+        return AdMob.INVALID;
+        }
+
+        public void AndroidThunkJava_AdMob_SetChartboostConsentStatus(int status){
+        Log.debug("please enable chartboost easyadspro setting");
+        }
+        </insert>
+      </true>
+    </if>
+    
+    <if condition="DisableFacebook">
+      <true>
+        <insert>
+          public int AndroidThunkJava_Admob_GetFacebookConsentStatus(){
+            Log.debug("please enable facebook easyadspro setting");
+            return AdMob.INVALID;	
+		      }
+
+          public void AndroidThunkJava_Admob_SetFacebookConsentStatus(int status){
+			      Log.debug("please enable facebook easyadspro setting");
+		      }
+        </insert>
+      </true>
+    </if>
+    
+			
+	</gameActivityClassAdditions>
+	
+	<!-- optional additions to GameActivity onCreate metadata reading in GameActivity.java -->
+	<gameActivityReadMetadataAdditions>
+		
+				<insert>
+					// Facebook gameActivityReadMetadataAdditions
+				</insert>
+			
+	</gameActivityReadMetadataAdditions>
+	
+	<!-- optional additions to GameActivity onCreate in GameActivity.java -->
+	<gameActivityOnCreateAdditions>
+		
+				<insert>
+          // Begin AdMob onCreate
+          Log.debug("AdMob:Ready Create!");
+          adMobInstance = new AdMob(this, activityLayout, false);
+          AndroidThunkJava_AdMob_InitlizeSdk();
+
+          final String testDevice = _bundle.getString("com.epicgames.ue4.AdMob.TestDevice");
+          if(testDevice != null &amp;&amp; testDevice.length()> 0){
+          String[] deviceList = testDevice.split(",");
+          for(int i = 0; i 	&lt; deviceList.length; i++){
+				      ConsentInformation.getInstance(_activity).addTestDevice(deviceList[i]);
+			      }
+            ConsentInformation.getInstance(_activity).
+          	setDebugGeography(DebugGeography.DEBUG_GEOGRAPHY_EEA);
+          }
+
+
+          // End AdMob onCreate
+        </insert>
+	</gameActivityOnCreateAdditions>
+
+	<!-- optional additions to GameActivity onDestroy in GameActivity.java-->
+	<gameActivityOnDestroyAdditions>
+		
+				<insert>
+          // Begin AdMob onDestroy
+          if (adMobInstance != null)
+          {
+          adMobInstance.OnDestroy();
+          }
+          // End AdMob onDestroy
+        </insert>
+			
+	</gameActivityOnDestroyAdditions>
+	
+	<!-- optional additions to GameActivity onStart in GameActivity.java -->
+	<gameActivityOnStartAdditions>
+		
+				<insert>
+	// Begin AdMob onStart
+	// End AdMob onStart
+				</insert>
+			
+	</gameActivityOnStartAdditions>
+
+	<!-- optional additions to GameActivity onStop in GameActivity.java -->
+	<gameActivityOnStopAdditions>
+		
+				<insert>
+	// Begin AdMob onStop
+	// End AdMob onStop
+				</insert>
+			
+	</gameActivityOnStopAdditions>
+
+	<!-- optional additions to GameActivity onPause in GameActivity.java -->
+	<gameActivityOnPauseAdditions>
+		
+				<insert>
+          // Begin AdMob onPause
+          if (adMobInstance != null)
+          {
+          adMobInstance.OnPause();
+          }
+          // End AdMob onPause
+        </insert>
+			
+	</gameActivityOnPauseAdditions>
+
+	<!-- optional additions to GameActivity onResume in GameActivity.java -->
+	<gameActivityOnResumeAdditions>
+		
+				<insert>
+          // Begin AdMob onResume
+          if (adMobInstance != null)
+          {
+          adMobInstance.OnResume();
+          }
+          // End AdMob onResume
+        </insert>
+			
+	</gameActivityOnResumeAdditions>
+
+	<!-- optional additions to GameActivity onActivityResult in GameActivity.java -->
+	<gameActivityOnActivityResultAdditions>
+		
+				<insert>
+	// Begin Facebook onActivityResult
+	//if (facebookLogin != null)
+	//{
+	//	facebookLogin.getCallbackManager().onActivityResult(requestCode, resultCode, data);
+	//}
+	// End Facebook onActivityResult
+				</insert>
+			
+	</gameActivityOnActivityResultAdditions>
+
+	<!-- optional libraries to load in GameActivity.java before libUE4.so -->
+	<soLoadLibrary>
+	</soLoadLibrary>
+</root>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+EasyAds Pro - unreal engine 4 ads plugin
+ Copyright (C) 2019 feiwu <feixuwu@outlook.com> All Rights Reserved.
+-->
+<root>
+
+    <init>
+        <log text="EasyAds add GADApplicationIdentifier to plist..."/>
+        <copyDir src="$S(PluginDir)/../ThirdParty/TrackingLocalize"
+                      dst="$S(ProjectDir)/Build/IOS" />
+		<setStringFromProperty result="IOSAppId" ini="Engine" section="/Script/EasyAdsEditor.AdmobSetting" property="IOSAppId" default="0"/>
+		<dumpvars/>
+    </init>
+    
+	
+	<iosPListUpdates>
+		<setElement result="AdmobKey" xml="&lt;key&gt;GADApplicationIdentifier&lt;/key&gt;"/>
+		<addElement tag="dict" name="AdmobKey" once="true"/>
+		
+		<setElement result="AdmobString" xml="&lt;string&gt;$S(IOSAppId)&lt;/string&gt;"/>
+		<addElement tag="dict" name="AdmobString" once="true"/>
+
+
+    <setElement result="FacebookAppEventKey" xml="&lt;key&gt;FacebookAutoLogAppEventsEnabled&lt;/key&gt;"/>
+    <addElement tag="dict" name="FacebookAppEventKey" once="true"/>
+
+    <setElement result="FacebookAppEventValue" xml="&lt;string&gt;false&lt;/string&gt;"/>
+    <addElement tag="dict" name="FacebookAppEventValue" once="true"/>
+
+
+    <addElements tag="dict" once="true">
+      <key>SKAdNetworkItems</key>
+      <array>
+        <dict>
+          <key>SKAdNetworkIdentifier</key>
+          <string>cstr6suwn9.skadnetwork</string>
+        </dict>
+      </array>
+    </addElements>
+
+    <addElements tag="dict" once="true">
+      <key>NSUserTrackingUsageDescription</key>
+      <string>This identifier will be used to deliver personalized ads to you.</string>
+    </addElements>
+    
+	</iosPListUpdates>
+	
+</root>

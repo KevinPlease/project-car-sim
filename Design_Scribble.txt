@@ -4,9 +4,3 @@ KeyAlias: "MyKey"
 Pass (keystore and key): doubledrift_1993_1995
 
 SHA1:   09:7D:3B:BB:4A:AB:E5:72:7C:EA:66:78:3F:D4:26:AA:FB:96:41:C4
-
-
-
-iOS plist info for icons
-
-<key>CFBundleIcons</key><dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconName</key><string>Icon</string><key>CFBundleIconFiles</key><array><string>Icon20x20</string><string>Icon29x29</string><string>Icon40x40</string><string>Icon60x60</string></array></dict></dict><key>CFBundleIcons~ipad</key><dict><key>CFBundlePrimaryIcon</key><dict><key>CFBundleIconName</key><string>Icon</string><key>CFBundleIconFiles</key><array><string>Icon20x20</string><string>Icon29x29</string><string>Icon40x40</string><string>Icon60x60</string><string>Icon76x76</string><string>Icon83.5x83.5</string><string>Icon1024x1024</string></array></dict></dict>

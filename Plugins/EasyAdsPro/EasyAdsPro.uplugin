@@ -1,0 +1,38 @@
+{
+	"FileVersion": 3,
+	"Version": 10,
+	"VersionName": "1.18.11",
+	"FriendlyName": "EasyAds Pro",
+	"Description": "/** EasyAdsPro - unreal engine 4 ads plugin** Copyright (C) 2019 feixuwu <feixuwu@outlook.com> All Rights Reserved.*/",
+	"Category": "Other",
+	"CreatedBy": "feixuwu@outlook.com",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/75a64f8d7e4a46d99bb9721375bf23c4",
+	"SupportURL": "",
+	"EngineVersion": "4.26.0",
+	"CanContainContent": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "EasyAds",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": [
+				"Win64",
+				"Mac",
+				"IOS",
+				"Android"
+			]
+		},
+		{
+			"Name": "EasyAdsEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": [
+				"Win64",
+				"Mac"
+			]
+		}
+	]
+}
